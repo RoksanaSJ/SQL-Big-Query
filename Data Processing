@@ -1,0 +1,35 @@
+--Change all values in the Status (Payments) column to uppercase.
+SELECT UPPER(Status) AS UpperStatus
+FROM shop-online-482614.Shop_Online.Payments
+
+--In the Payments table, concatenate Status and Payment Method, inserting a hyphen between them.
+SELECT CONCAT(Status,"-",PaymentMethod) AS Concatenate
+FROM shop-online-482614.Shop_Online.Payments
+
+--"In the Discounts table, update the DiscountType column to replace 'Percentage' with 'Prct' and 'Fixed' with 'Fxd'.
+SELECT Replace(Replace(DiscountType,'Percentage','Prct'),'Fixed','Fxd') AS FullDiscountName
+FROM shop-online-482614.Shop_Online.Discounts
+
+--Increase the Amount values by 1% to account for payment processing costs.
+SELECT ROUND((SAFE_CAST(Amount AS FLOAT64)) + (0.01*SAFE_CAST(Amount AS FLOAT64)),2) AS AmountWIthProcessingCost
+FROM shop-online-482614.Shop_Online.Payments
+
+--Display product names and their prices after a 10% discount.
+SELECT ProductName, Price, ROUND((SAFE_CAST(Price AS FLOAT64))-(0.1*SAFE_CAST(Price AS FLOAT64)),2) AS PriceWithRebate
+FROM shop-online-482614.Shop_Online.Products
+
+--In the discounts table, calculate the duration of the discount (using the StartDate and EndDate columns).
+SELECT DATE_DIFF(EndDate, StartDate, DAY) AS DiscountDuration
+FROM shop-online-482614.Shop_Online.Discounts
+
+--For each order, display: OrderID, OrderDate, order age in days, total order value rounded to 2 decimal places, and unit price (TotalAmount divided by Quantity).
+SELECT OrderID, OrderDate, DATE_DIFF(ShippedDate, OrderDate,DAY) AS OrderAge, ROUND(TotalAmount, 2) AS TotalAmountR, (TotalAmount/Quantity) AS UnitPrice
+FROM shop-online-482614.Shop_Online.Orders
+
+--Cast the Quantity column to FLOAT64.
+SELECT CAST(Quantity AS FLOAT64) AS FlQuantity
+FROM shop-online-482614.Shop_Online.Orders
+
+--For each payment, calculate the number of days from the payment date to today.
+SELECT PaymentID, DATE_DIFF(DATE(PaymentDate),CURRENT_DATE(), DAY) AS DaysSincePaid
+FROM shop-online-482614.Shop_Online.Payments
