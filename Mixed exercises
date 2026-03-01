@@ -33,3 +33,27 @@ LEFT JOIN shop-online-482614.Shop_Online.Orders o
 ON p.ProductID = o.ProductID
 GROUP BY ProductID
 HAVING ROUND(SUM(TotalAmount),2) > 5000
+
+--In the Inventory and Warehouses tables, find the warehouses with the highest stock levels in the first half of the year, sorted descending by the total number of products.
+SELECT w.WarehouseName, SUM(StockLevel) AS TotalStockLevel
+FROM shop-online-482614.Shop_Online.Inventory i
+LEFT JOIN shop-online-482614.Shop_Online.Warehouses w
+ON i.WarehouseID = w.WarehouseID
+WHERE EXTRACT(MONTH FROM i.Date) < 7
+GROUP BY w.WarehouseName
+ORDER BY TotalStockLevel DESC
+
+--Discounts in orders. In the Orders and Discounts tables, find orders where discounts above 10 USD were applied.
+SELECT OrderID, TotalAmount, DiscountValue
+FROM shop-online-482614.Shop_Online.Orders o
+LEFT JOIN shop-online-482614.Shop_Online.Discounts d
+ON o.ProductID = d.ProductID
+WHERE DiscountValue > 10
+
+--Sales by region and customer category. In the Orders and Customers tables, find the total order value by country.
+SELECT Country, ROUND(SUM(TotalAmount),2) SumAmount
+FROM shop-online-482614.Shop_Online.Orders o
+LEFT JOIN shop-online-482614.Shop_Online.Customers c
+ON o.CustomerID = c.CustomerID
+WHERE Country IS NOT NULL
+GROUP BY Country
